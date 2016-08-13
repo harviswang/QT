@@ -125,18 +125,18 @@ void SettingsDialog::fillPortsInfo()
     QString manufacturer;
     QString serialNumber;
     const QList<QSerialPortInfo> infos = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &info : infos) {
+    for (QList<QSerialPortInfo>::const_iterator info = infos.begin(); info != infos.end(); info++) {
         QStringList list;
-        description  = info.description();
-        manufacturer = info.manufacturer();
-        serialNumber = info.serialNumber();
-        list << info.portName()
+        description  = info->description();
+        manufacturer = info->manufacturer();
+        serialNumber = info->serialNumber();
+        list << info->portName()
              << (!description.isEmpty()  ? description  : blankString)
              << (!manufacturer.isEmpty() ? manufacturer : blankString)
              << (!serialNumber.isEmpty() ? serialNumber : blankString)
-             << info.systemLocation()
-             << (info.vendorIdentifier() ? QString::number(info.vendorIdentifier(),  16) : blankString)
-             << (info.productIdentifier()? QString::number(info.productIdentifier(), 16) : blankString);
+             << info->systemLocation()
+             << (info->vendorIdentifier() ? QString::number(info->vendorIdentifier(),  16) : blankString)
+             << (info->productIdentifier()? QString::number(info->productIdentifier(), 16) : blankString);
 
         ui->serialPortInfoListBox->addItem(list.first(), list);
     }

@@ -1,8 +1,11 @@
 *.o
 *.out
 *.exe
+*.core
 Makefile
 moc_*.cpp
 moc_*.h
+ui_*.h
 *.pro.user
 ./test/*
+*/build-*-Desktop-Debug/*

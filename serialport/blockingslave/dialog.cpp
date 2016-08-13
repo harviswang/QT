@@ -25,8 +25,8 @@ Dialog::Dialog(QWidget *parent)
     waitRequestSpinBox->setValue(10000);
     
     const QList<QSerialPortInfo> infos = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &info : infos) {
-        serialPortComboBox->addItem(info.portName());
+    for (QList<QSerialPortInfo>::const_iterator info = infos.begin(); info != infos.end(); info++) {
+        serialPortComboBox->addItem(info->portName());
     }
     
     QGridLayout *mainLayout = new QGridLayout;

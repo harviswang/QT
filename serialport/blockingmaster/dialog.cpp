@@ -24,8 +24,8 @@ Dialog::Dialog(QWidget *parent)
     , runButton(new QPushButton(tr("Start")))
 {
     const QList<QSerialPortInfo> infos = QSerialPortInfo::availablePorts();
-    for (const QSerialPortInfo &info : infos) {
-        serialPortComboBox->addItem(info.portName());
+    for (QList<QSerialPortInfo>::const_iterator info = infos.begin(); info != infos.end(); info++) {
+        serialPortComboBox->addItem(info->portName());
     }
 
     waitResponseSpinBox->setRange(0, 10000);
