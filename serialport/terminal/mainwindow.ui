@@ -84,7 +84,7 @@
 		<action name="actionConnect">
 			<property name="icon">
 				<iconset resource="terminal.qrc">
-					<normaloff>:/images/connect.png</normaloff>:/images/connect.png
+					<normaloff>:/images/connect.png</normaloff>
 				</iconset>
 			</property>
 			<property name="text">
@@ -100,7 +100,7 @@
 		<action name="actionDisconnect">
 			<property name="icon">
 				<iconset resource="terminal.qrc">
-					<normaloff>:/images/disconnect.png</normaloff>:/images/disconnect.png
+					<normaloff>:/images/disconnect.png</normaloff>
 				</iconset>
 			</property>
 			<property name="text">
@@ -116,7 +116,7 @@
 		<action name="actionConfigure">
 			<property name="icon">
 				<iconset resource="terminal.qrc">
-					<normaloff>:/images/settings.png</normaloff>:/images/settings.png
+					<normaloff>:/images/settings.png</normaloff>
 				</iconset>
 			</property>
 			<property name="text">
@@ -132,7 +132,7 @@
 		<action name="actionClear">
 			<property name="icon">
 				<iconset resource="terminal.qrc">
-					<normaloff>:/images/clear.png</normaloff>:/images/clear.png
+					<normaloff>:/images/clear.png</normaloff>
 				</iconset>
 			</property>
 			<property name="text">
@@ -148,7 +148,7 @@
 		<action name="actionQuit">
 			<property name="icon">
 				<iconset resource="terminal.qrc">
-					<normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png
+					<normaloff>:/images/application-exit.png</normaloff>
 				</iconset>
 			</property>
 			<property name="text">
