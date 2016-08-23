@@ -6,6 +6,7 @@ Makefile
 moc_*.cpp
 moc_*.h
 ui_*.h
+qrc_*.cpp
 *.pro.user
 test/*
 */build-*-Desktop-Debug/*
