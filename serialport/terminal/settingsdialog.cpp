@@ -9,7 +9,7 @@ QT_USE_NAMESPACE
 
 static const char blankString[] = QT_TRANSLATE_NOOP("SettingsDialog", "N/A");
 
-SettingsDialog::SettingsDialog(QWidget *parent)
+SettingDialog::SettingDialog(QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::SettingsDialog)
 {
@@ -20,33 +20,31 @@ SettingsDialog::SettingsDialog(QWidget *parent)
     ui->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
     
     connect(ui->applyButton, &QPushButton::clicked,
-            this, &SettingsDialog::apply);
+            this, &SettingDialog::apply);
     connect(ui->serialPortInfoListBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, &SettingsDialog::showPortInfo);
+            this, &SettingDialog::showPortInfo);
     connect(ui->baudRateBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, &SettingsDialog::checkCustomBaudRatePolicy);
+            this, &SettingDialog::checkCustomBaudRatePolicy);
     connect(ui->serialPortInfoListBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            this, &SettingsDialog::checkCustomDevicePathPolicy);
+            this, &SettingDialog::checkCustomDevicePathPolicy);
 
-    fillPortsParameters();
-    fillPortsInfo();
+    fillSerialPortParameters();
+    fillSerialPortInfo();
 
-    updateSettings();
+    updateSetting();
 }
 
-SettingsDialog::~SettingsDialog()
+SettingDialog::~SettingDialog()
 {
-    if (ui) {
-        delete ui;
-    }
+    delete ui;
 }
 
-SettingsDialog::Settings SettingsDialog::settings() const
+SettingDialog::Setting SettingDialog::getSetting() const
 {
-    return currentSettings;
+    return currentSetting;
 }
 
-void SettingsDialog::showPortInfo(int idx)
+void SettingDialog::showPortInfo(int idx)
 {
     if (idx == -1) {
         return ;
@@ -61,13 +59,13 @@ void SettingsDialog::showPortInfo(int idx)
     ui->pidLabel->setText(tr("Productor Identifier: %1").arg(list.count() > 6 ? list.at(6) : tr(blankString)));
 }
 
-void SettingsDialog::apply()
+void SettingDialog::apply()
 {
-    updateSettings();
+    updateSetting();
     hide();
 }
 
-void SettingsDialog::checkCustomBaudRatePolicy(int idx)
+void SettingDialog::checkCustomBaudRatePolicy(int idx)
 {
     bool isCustomBaudRate = !ui->baudRateBox->itemData(idx).isValid();
     ui->baudRateBox->setEditable(isCustomBaudRate);
@@ -78,7 +76,7 @@ void SettingsDialog::checkCustomBaudRatePolicy(int idx)
     }
 }
 
-void SettingsDialog::checkCustomDevicePathPolicy(int idx)
+void SettingDialog::checkCustomDevicePathPolicy(int idx)
 {
     bool isCustomPath = !ui->serialPortInfoListBox->itemData(idx).isValid();
     ui->serialPortInfoListBox->setEditable(isCustomPath);
@@ -87,12 +85,39 @@ void SettingsDialog::checkCustomDevicePathPolicy(int idx)
     }
 }
 
-void SettingsDialog::fillPortsParameters()
+void SettingDialog::fillSerialPortParameters()
 {
-    ui->baudRateBox->addItem(QStringLiteral("9600"),   QSerialPort::Baud9600);
-    ui->baudRateBox->addItem(QStringLiteral("19200"),  QSerialPort::Baud19200);
-    ui->baudRateBox->addItem(QStringLiteral("38400"),  QSerialPort::Baud38400);
-    ui->baudRateBox->addItem(QStringLiteral("115200"), QSerialPort::Baud115200);
+    ui->baudRateBox->addItem(QStringLiteral("0"),   SettingDialog::Baudrate0);
+    ui->baudRateBox->addItem(QStringLiteral("50"),   SettingDialog::Baudrate50);
+    ui->baudRateBox->addItem(QStringLiteral("75"),   SettingDialog::Baudrate75);
+    ui->baudRateBox->addItem(QStringLiteral("110"),   SettingDialog::Baudrate110);
+    ui->baudRateBox->addItem(QStringLiteral("134"),   SettingDialog::Baudrate134);
+    ui->baudRateBox->addItem(QStringLiteral("150"),   SettingDialog::Baudrate150);
+    ui->baudRateBox->addItem(QStringLiteral("200"),   SettingDialog::Baudrate200);
+    ui->baudRateBox->addItem(QStringLiteral("300"),   SettingDialog::Baudrate300);
+    ui->baudRateBox->addItem(QStringLiteral("600"),   SettingDialog::Baudrate600);
+    ui->baudRateBox->addItem(QStringLiteral("1200"),   SettingDialog::Baudrate1200);
+    ui->baudRateBox->addItem(QStringLiteral("1800"),   SettingDialog::Baudrate1800);
+    ui->baudRateBox->addItem(QStringLiteral("2400"),   SettingDialog::Baudrate2400);
+    ui->baudRateBox->addItem(QStringLiteral("4800"),   SettingDialog::Baudrate4800);
+    ui->baudRateBox->addItem(QStringLiteral("9600"),   SettingDialog::Baudrate9600);
+    ui->baudRateBox->addItem(QStringLiteral("19200"),   SettingDialog::Baudrate19200);
+    ui->baudRateBox->addItem(QStringLiteral("38400"),   SettingDialog::Baudrate38400);
+    ui->baudRateBox->addItem(QStringLiteral("57600"),   SettingDialog::Baudrate57600);
+    ui->baudRateBox->addItem(QStringLiteral("115200"),   SettingDialog::Baudrate115200);
+    ui->baudRateBox->addItem(QStringLiteral("230400"),   SettingDialog::Baudrate230400);
+    ui->baudRateBox->addItem(QStringLiteral("460800"),   SettingDialog::Baudrate460800);
+    ui->baudRateBox->addItem(QStringLiteral("500000"),   SettingDialog::Baudrate500000);
+    ui->baudRateBox->addItem(QStringLiteral("576000"),   SettingDialog::Baudrate576000);
+    ui->baudRateBox->addItem(QStringLiteral("921600"),   SettingDialog::Baudrate921600);
+    ui->baudRateBox->addItem(QStringLiteral("1000000"),   SettingDialog::Baudrate1000000);
+    ui->baudRateBox->addItem(QStringLiteral("1152000"),   SettingDialog::Baudrate1152000);
+    ui->baudRateBox->addItem(QStringLiteral("1500000"),   SettingDialog::Baudrate1500000);
+    ui->baudRateBox->addItem(QStringLiteral("2000000"),   SettingDialog::Baudrate2000000);
+    ui->baudRateBox->addItem(QStringLiteral("2500000"),   SettingDialog::Baudrate2500000);
+    ui->baudRateBox->addItem(QStringLiteral("3000000"),   SettingDialog::Baudrate3000000);
+    ui->baudRateBox->addItem(QStringLiteral("3500000"),   SettingDialog::Baudrate3500000);
+    ui->baudRateBox->addItem(QStringLiteral("4000000"),   SettingDialog::Baudrate4000000);
     ui->baudRateBox->addItem(tr("Custom"));
 
     ui->dataBitsBox->addItem(QStringLiteral("5"), QSerialPort::Data5);
@@ -118,7 +143,7 @@ void SettingsDialog::fillPortsParameters()
     ui->flowControlBox->addItem(tr("XON/XOFF"), QSerialPort::SoftwareControl);
 }
 
-void SettingsDialog::fillPortsInfo()
+void SettingDialog::fillSerialPortInfo()
 {
     ui->serialPortInfoListBox->clear();
     QString description;
@@ -144,33 +169,33 @@ void SettingsDialog::fillPortsInfo()
     ui->serialPortInfoListBox->addItem(tr("Custom"));
 }
 
-void SettingsDialog::updateSettings()
+void SettingDialog::updateSetting()
 {
-    currentSettings.name = ui->serialPortInfoListBox->currentText();
+    currentSetting.name = ui->serialPortInfoListBox->currentText();
 
     if (ui->baudRateBox->currentIndex() == 4) {
-        currentSettings.baudRate = ui->baudRateBox->currentText().toInt();
+        currentSetting.baudRate = ui->baudRateBox->currentText().toInt();
     } else {
-        currentSettings.baudRate = static_cast<QSerialPort::BaudRate>(
+        currentSetting.baudRate = static_cast<QSerialPort::BaudRate>(
                 ui->baudRateBox->itemData(ui->baudRateBox->currentIndex()).toInt());
     }
-    currentSettings.stringBaudRate = QString::number(currentSettings.baudRate);
+    currentSetting.stringBaudRate = QString::number(currentSetting.baudRate);
 
-    currentSettings.dataBits = static_cast<QSerialPort::DataBits>(
+    currentSetting.dataBits = static_cast<QSerialPort::DataBits>(
             ui->dataBitsBox->itemData(ui->dataBitsBox->currentIndex()).toInt());
-    currentSettings.stringDataBits = ui->dataBitsBox->currentText();
+    currentSetting.stringDataBits = ui->dataBitsBox->currentText();
 
-    currentSettings.parity = static_cast<QSerialPort::Parity>(
+    currentSetting.parity = static_cast<QSerialPort::Parity>(
             ui->parityBox->itemData(ui->parityBox->currentIndex()).toInt());
-    currentSettings.stringParity = ui->parityBox->currentText();
+    currentSetting.stringParity = ui->parityBox->currentText();
 
-    currentSettings.stopBits = static_cast<QSerialPort::StopBits>(
+    currentSetting.stopBits = static_cast<QSerialPort::StopBits>(
             ui->stopBitsBox->itemData(ui->stopBitsBox->currentIndex()).toInt());
-    currentSettings.stringStopBits = ui->stopBitsBox->currentText();
+    currentSetting.stringStopBits = ui->stopBitsBox->currentText();
 
-    currentSettings.flowControl = static_cast<QSerialPort::FlowControl>(
+    currentSetting.flowControl = static_cast<QSerialPort::FlowControl>(
             ui->flowControlBox->itemData(ui->flowControlBox->currentIndex()).toInt());
-    currentSettings.stringFlowControl = ui->flowControlBox->currentText();
+    currentSetting.stringFlowControl = ui->flowControlBox->currentText();
 
-    currentSettings.localEchoEnabled = ui->localEchoCheckBox->isChecked();
+    currentSetting.localEchoEnabled = ui->localEchoCheckBox->isChecked();
 }

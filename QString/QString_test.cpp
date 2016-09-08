@@ -128,7 +128,14 @@ static void section_test()
     PRINT(csv.section(',', 2, 2));
     PRINT(path.section('/', 3, 4));
     PRINT(path.section('/', 3, 4, QString::SectionSkipEmpty));
-    
+    QString langCode = "en_US.UTF-8";
+    PRINT(langCode);
+    PRINT(langCode.section(".", -1));
+    PRINT(langCode.section(".", 0, 0));
+    langCode = langCode.section(".", 0, 0);
+    PRINT(langCode);
+    langCode.truncate(langCode.indexOf("_"));
+    PRINT(langCode);
 }
 
 static void setNum_test()

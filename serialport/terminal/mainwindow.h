@@ -12,7 +12,7 @@ namespace Ui {
 }
 
 class Console;
-class SettingsDialog;
+class SettingDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -40,8 +40,8 @@ private:
     Ui::MainWindow *ui;
     QLabel *status;
     Console *console;
-    SettingsDialog *settings;
-    QSerialPort *serial;
+    SettingDialog *settingDialog;
+    QSerialPort *serialPort;
 };
 
 

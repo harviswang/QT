@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     console = new Console;
     console->setEnabled(false);
     setCentralWidget(console);
-    serial = new QSerialPort(this);
-    settings = new SettingsDialog;
+    serialPort = new QSerialPort(this);
+    settingDialog = new SettingDialog();
 
     ui->actionConnect->setEnabled(true);
     ui->actionDisconnect->setEnabled(false);
@@ -28,38 +28,38 @@ MainWindow::MainWindow(QWidget *parent)
 
     initActionsConnections();
 
-    connect(serial, static_cast<void (QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error),
+    connect(serialPort, static_cast<void (QSerialPort::*)(QSerialPort::SerialPortError)>(&QSerialPort::error),
             this, &MainWindow::handleError);
-    connect(serial,  &QSerialPort::readyRead, this, &MainWindow::readData);
+    connect(serialPort,  &QSerialPort::readyRead, this, &MainWindow::readData);
     connect(console, &Console::getData,       this, &MainWindow::writeData);
 }
 
 MainWindow::~MainWindow()
 {
-    delete settings;
+    delete settingDialog;
     delete ui;
 }
 
 void MainWindow::openSerialPort()
 {
-    SettingsDialog::Settings p = settings->settings();
-    serial->setPortName(p.name);
-    serial->setBaudRate(p.baudRate);
-    serial->setDataBits(p.dataBits);
-    serial->setParity(p.parity);
-    serial->setStopBits(p.stopBits);
-    serial->setFlowControl(p.flowControl);
-    if (serial->open(QIODevice::ReadWrite)) {
+    SettingDialog::Setting setting = settingDialog->getSetting();
+    serialPort->setPortName(setting.name);
+    serialPort->setBaudRate(setting.baudRate);
+    serialPort->setDataBits(setting.dataBits);
+    serialPort->setParity(setting.parity);
+    serialPort->setStopBits(setting.stopBits);
+    serialPort->setFlowControl(setting.flowControl);
+    if (serialPort->open(QIODevice::ReadWrite)) {
         console->setEnabled(true);
-        console->setLocalEchoEnabled(p.localEchoEnabled);
+        console->setLocalEchoEnabled(setting.localEchoEnabled);
         ui->actionConnect->setEnabled(false);
         ui->actionDisconnect->setEnabled(true);
         ui->actionConfigure->setEnabled(false);
         showStatusMessage(tr("Connected to %1 : %2, %3, %4, %5, %6")
-                .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
-                .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
+                .arg(setting.name).arg(setting.stringBaudRate).arg(setting.stringDataBits)
+                .arg(setting.stringParity).arg(setting.stringStopBits).arg(setting.stringFlowControl));
     } else {
-        QMessageBox::critical(this, tr("Error"), serial->errorString());
+        QMessageBox::critical(this, tr("Error"), serialPort->errorString());
 
         showStatusMessage(tr("Open error"));
     }
@@ -67,8 +67,8 @@ void MainWindow::openSerialPort()
 
 void MainWindow::closeSerialPort()
 {
-    if (serial->isOpen()) {
-        serial->close();
+    if (serialPort->isOpen()) {
+        serialPort->close();
     }
     console->setEnabled(false);
     ui->actionConnect->setEnabled(true);
@@ -87,19 +87,19 @@ void MainWindow::about()
 
 void MainWindow::writeData(const QByteArray &data)
 {
-    serial->write(data);
+    serialPort->write(data);
 }
 
 void MainWindow::readData()
 {
-    QByteArray data = serial->readAll();
+    QByteArray data = serialPort->readAll();
     console->putData(data);
 }
 
 void MainWindow::handleError(QSerialPort::SerialPortError error)
 {
     if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), serial->errorString());
+        QMessageBox::critical(this, tr("Critical Error"), serialPort->errorString());
         closeSerialPort();
     }
 }
@@ -109,7 +109,7 @@ void MainWindow::initActionsConnections()
     connect(ui->actionConnect, &QAction::triggered, this, &MainWindow::openSerialPort);
     connect(ui->actionDisconnect, &QAction::triggered, this, &MainWindow::closeSerialPort);
     connect(ui->actionQuit, &QAction::triggered, this, &MainWindow::close);
-    connect(ui->actionConfigure, &QAction::triggered, settings, &MainWindow::show);
+    connect(ui->actionConfigure, &QAction::triggered, settingDialog, &MainWindow::show);
     connect(ui->actionClear, &QAction::triggered, console, &Console::clear);
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(ui->actionAboutQt, &QAction::triggered, qApp, &QApplication::aboutQt);
